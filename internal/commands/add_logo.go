@@ -1,0 +1,39 @@
+package commands
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+)
+
+func AddLogo(videoPath, logoPath string) {
+	folderName := "withLogo"
+	if err := os.MkdirAll(folderName, 0755); err != nil {
+		fmt.Printf("Error creating folder '%s': %v\n", folderName, err)
+		os.Exit(1)
+	}
+
+	fileName := filepath.Base(videoPath)
+	outputPath := filepath.Join(folderName, fileName)
+
+	fmt.Printf("Adding logo to '%s'...\n", videoPath)
+
+	if err := executeCommand(
+		"ffmpeg",
+		"-i", videoPath,
+		"-i", logoPath,
+		"-filter_complex", "[1]scale=iw*1.3:ih*1.3,format=rgba,colorchannelmixer=aa=0.8[logo];[0][logo]overlay=1890:1047",
+		"-c:v", "h264_nvenc",
+		"-preset", "fast",
+		"-b:v", "5M",
+		"-c:a", "aac",
+		"-b:a", "192k",
+		"-movflags", "+faststart",
+		"-y", outputPath,
+	); err != nil {
+		fmt.Printf("Error adding logo: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Logo added to: %s\n", outputPath)
+}
