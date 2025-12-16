@@ -15,6 +15,11 @@ func AddLogo(videoPath, logoPath string) {
 
 	fileName := filepath.Base(videoPath)
 	subfolderName := fileName[:len(fileName)-len(filepath.Ext(fileName))]
+	if err := os.MkdirAll(filepath.Join(folderName, subfolderName), 0755); err != nil {
+		fmt.Printf("Error creating subfolder '%s': %v\n", subfolderName, err)
+		os.Exit(1)
+	}
+
 	outputPath := filepath.Join(folderName, subfolderName, fileName)
 
 	fmt.Printf("Adding logo to '%s'...\n", videoPath)

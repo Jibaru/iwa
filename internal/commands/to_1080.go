@@ -15,6 +15,11 @@ func To1080(inputPath string) {
 
 	fileName := filepath.Base(inputPath)
 	subfolderName := fileName[:len(fileName)-len(filepath.Ext(fileName))]
+	if err := os.MkdirAll(filepath.Join(folderName, subfolderName), 0755); err != nil {
+		fmt.Printf("Error creating subfolder '%s': %v\n", subfolderName, err)
+		os.Exit(1)
+	}
+
 	outputPath := filepath.Join(folderName, subfolderName, fileName)
 
 	fmt.Printf("Converting '%s' to 1080...\n", inputPath)
