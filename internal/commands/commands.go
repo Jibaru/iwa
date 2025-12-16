@@ -6,7 +6,7 @@ import (
 )
 
 func executeCommand(command string) error {
-	cmd := exec.Command("sh", "-c", command)
+	cmd := exec.Command(command)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
