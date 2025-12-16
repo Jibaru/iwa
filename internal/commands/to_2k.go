@@ -14,7 +14,8 @@ func To2K(inputPath string) {
 	}
 
 	fileName := filepath.Base(inputPath)
-	outputPath := filepath.Join(folderName, fileName)
+	subfolderName := fileName[:len(fileName)-len(filepath.Ext(fileName))]
+	outputPath := filepath.Join(folderName, subfolderName, fileName)
 
 	fmt.Printf("Converting '%s' to 2K...\n", inputPath)
 

@@ -14,7 +14,8 @@ func AddLogo(videoPath, logoPath string) {
 	}
 
 	fileName := filepath.Base(videoPath)
-	outputPath := filepath.Join(folderName, fileName)
+	subfolderName := fileName[:len(fileName)-len(filepath.Ext(fileName))]
+	outputPath := filepath.Join(folderName, subfolderName, fileName)
 
 	fmt.Printf("Adding logo to '%s'...\n", videoPath)
 
