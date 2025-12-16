@@ -18,9 +18,29 @@ func To2K(inputPath string) {
 
 	fmt.Printf("Converting '%s' to 2K...\n", inputPath)
 
-	command := fmt.Sprintf("ffmpeg -i \"%s\" -vf scale=2560:1440 -c:v h264_nvenc -preset p7 -tune hq -profile:v high -rc vbr -cq:v 16 -b:v 16M -maxrate 22M -bufsize 44M -spatial-aq 1 -temporal-aq 1 -rc-lookahead 32 -surfaces 64 -pix_fmt yuv420p -c:a aac -b:a 320k -movflags +faststart -y \"%s\"", inputPath, outputPath)
-
-	if err := executeCommand(command); err != nil {
+	if err := executeCommand(
+		"ffmpeg",
+		"-i", inputPath,
+		"-vf", "scale=2560:1440",
+		"-c:v", "h264_nvenc",
+		"-preset", "p7",
+		"-tune", "hq",
+		"-profile:v", "high",
+		"-rc", "vbr",
+		"-cq:v", "16",
+		"-b:v", "16M",
+		"-maxrate", "22M",
+		"-bufsize", "44M",
+		"-spatial-aq", "1",
+		"-temporal-aq", "1",
+		"-rc-lookahead", "32",
+		"-surfaces", "64",
+		"-pix_fmt", "yuv420p",
+		"-c:a", "aac",
+		"-b:a", "320k",
+		"-movflags", "+faststart",
+		"-y", outputPath,
+	); err != nil {
 		fmt.Printf("Error converting to 2K: %v\n", err)
 		os.Exit(1)
 	}
