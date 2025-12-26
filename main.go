@@ -9,38 +9,55 @@ import (
 	"github.com/Jibaru/iwa/internal/commands"
 )
 
+type stringSlice []string
+
+func (s *stringSlice) String() string {
+	return strings.Join(*s, ", ")
+}
+
+func (s *stringSlice) Set(value string) error {
+	*s = append(*s, value)
+	return nil
+}
+
 func main() {
-	inputFile := flag.String("i", "", "Input file path")
+	var inputFiles stringSlice
+
 	logoFile := flag.String("l", "", "Logo file path")
 	commandName := flag.String("c", "", "Command: avi2mp4, 2k, 1080")
+
+	flag.Var(&inputFiles, "i", "Input file path (can be repeated)")
 	flag.Parse()
 
-	if *inputFile == "" || *commandName == "" {
-		fmt.Println("Usage: app -i <input_file> -c <avi2mp4|2k|1080>")
+	if len(inputFiles) == 0 || *commandName == "" {
+		fmt.Println("Usage: app -i <file1> -i <file2> -c <avi2mp4|2k|1080>")
 		os.Exit(1)
 	}
 
-	if _, err := os.Stat(*inputFile); os.IsNotExist(err) {
-		fmt.Printf("Error: File '%s' does not exist\n", *inputFile)
-		os.Exit(1)
-	}
-
-	switch strings.ToLower(*commandName) {
-	case "avi2mp4":
-		commands.AVIToMP4(*inputFile)
-	case "2k":
-		commands.To2K(*inputFile)
-	case "1080":
-		commands.To1080(*inputFile)
-	case "addlogo":
-		if *logoFile == "" {
-			fmt.Println("Usage: app -i <input_file> -c addlogo -l <logo_file>")
+	for _, f := range inputFiles {
+		if _, err := os.Stat(f); os.IsNotExist(err) {
+			fmt.Printf("Error: File '%s' does not exist\n", f)
 			os.Exit(1)
 		}
+	}
 
-		commands.AddLogo(*inputFile, *logoFile)
-	default:
-		fmt.Printf("Error: Unknown conversion type '%s'. Use: mp4, 2k, or 1080\n", *commandName)
-		os.Exit(1)
+	for _, input := range inputFiles {
+		switch strings.ToLower(*commandName) {
+		case "avi2mp4":
+			commands.AVIToMP4(input)
+		case "2k":
+			commands.To2K(input)
+		case "1080":
+			commands.To1080(input)
+		case "addlogo":
+			if *logoFile == "" {
+				fmt.Println("Usage: app -i <file> -c addlogo -l <logo_file>")
+				os.Exit(1)
+			}
+			commands.AddLogo(input, *logoFile)
+		default:
+			fmt.Printf("Error: Unknown conversion type '%s'\n", *commandName)
+			os.Exit(1)
+		}
 	}
 }
