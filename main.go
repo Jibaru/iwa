@@ -24,13 +24,13 @@ func main() {
 	var inputFiles stringSlice
 
 	logoFile := flag.String("l", "", "Logo file path")
-	commandName := flag.String("c", "", "Command: avi2mp4, 2k, 1080")
+	commandName := flag.String("c", "", "Command: avi2mp4, 2k, 1080, addlogo, to4kfolder, to2kfolder, to1080folder")
 
 	flag.Var(&inputFiles, "i", "Input file path (can be repeated)")
 	flag.Parse()
 
 	if len(inputFiles) == 0 || *commandName == "" {
-		fmt.Println("Usage: app -i <file1> -i <file2> -c <avi2mp4|2k|1080>")
+		fmt.Println("Usage: app -i <file1> -i <file2> -c <avi2mp4|2k|1080|addlogo|to4kfolder|to2kfolder|to1080folder>")
 		os.Exit(1)
 	}
 
@@ -55,6 +55,12 @@ func main() {
 				os.Exit(1)
 			}
 			commands.AddLogo(input, *logoFile)
+		case "to4kfolder":
+			commands.ToFolder(input, "4K")
+		case "to2kfolder":
+			commands.ToFolder(input, "2K")
+		case "to1080folder":
+			commands.ToFolder(input, "1080")
 		default:
 			fmt.Printf("Error: Unknown conversion type '%s'\n", *commandName)
 			os.Exit(1)
