@@ -29,7 +29,7 @@ func AddLogo(videoPath, logoPath string) {
 		"-i", videoPath,
 		"-i", logoPath,
 		"-filter_complex",
-		"[1]format=rgba,colorchannelmixer=aa=0.8[logo];[0][logo]overlay=1890:1047",
+		"[1]scale=iw*1.3:ih*1.3,format=rgba,colorchannelmixer=aa=0.8[logo];[0][logo]overlay=1890:1047",
 		"-c:v", "h264_nvenc",
 		"-preset", "slow",
 		"-cq", "18",
